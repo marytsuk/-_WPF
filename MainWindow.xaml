@@ -1,0 +1,93 @@
+﻿<Window 
+    x:Class="WPF_Sample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_Sample"
+    mc:Ignorable="d"
+        Title="ResearcherObservable" Height="600" Width="1024" Closed="window_Closed" Loaded="window_Loaded">
+    <Window.Resources>
+        <local:Conv x:Key="myAllConverter"/>
+        <local:Pr_Conv x:Key="myPrConverter"/>
+        <local:ConvData x:Key="myDataConverter"/>
+        <DataTemplate x:Key="myAllTemplate">
+            <TextBlock Text="{Binding Converter={StaticResource myAllConverter}}"/>
+        </DataTemplate>
+        <DataTemplate x:Key="myPrTemplate">
+            <TextBlock Text="{Binding Converter={StaticResource myPrConverter}}"/>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid Background="#FF31969B">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="475*"/>
+            <ColumnDefinition Width="317*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Name ="Grid_New_PR"  Grid.Row="2" Grid.Column="2" RenderTransformOrigin="0.504,0.56">
+            <TextBlock FontSize="14" Text="{Binding SelectedItem.Name, ElementName=ListBox_Project}" Background="#FFC4D8D7" HorizontalAlignment="Left" Margin="60,79,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="126" Height="24"/>
+            <TextBlock FontSize="14" Background="#FFC4D8D7" Text ="{Binding SelectedItem.BegEnd[0], ElementName=ListBox_Project, Converter={StaticResource myDataConverter}}" HorizontalAlignment="Left" Margin="60,118,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="126" Height="24"/>
+            <TextBlock FontSize="14" Background="#FFC4D8D7" Text ="{Binding SelectedItem.BegEnd[1], ElementName=ListBox_Project, Converter={StaticResource myDataConverter}}" HorizontalAlignment="Left" Margin="60,157,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="126" Height="24"/>
+            <ComboBox FontSize="14" Name="ComboBox_Organith" SelectedItem="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="235,71,0,0" VerticalAlignment="Top" Width="120" />
+            <DatePicker FontSize="14"  SelectedDate="{Binding Path=BegEnd[0], UpdateSourceTrigger=PropertyChanged}" Name ="Begin" HorizontalAlignment="Left" Margin="235,117,0,0" VerticalAlignment="Top"/>
+            <DatePicker FontSize="14" SelectedDate="{Binding Path=BegEnd[1], UpdateSourceTrigger=PropertyChanged}" Name ="End" HorizontalAlignment="Left" Margin="235,165,0,0" VerticalAlignment="Top"/>
+            <TextBox FontSize="14" Text="{Binding Path=Count, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="235,213,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120"/>
+            <TextBox FontSize="14" Text="{Binding Path=Theme, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="23" Margin="235,257,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120"/>
+            <TextBlock FontSize="15" HorizontalAlignment="Left" Margin="0,23,0,0" TextWrapping="Wrap" Text="Information about selected Project :" VerticalAlignment="Top" Width="126"/>
+            <TextBlock HorizontalAlignment="Left" Margin="10,118,0,0" TextWrapping="Wrap" Text="Start : " VerticalAlignment="Top" />
+
+            <TextBlock HorizontalAlignment="Left" Margin="10,157,0,0" TextWrapping="Wrap" Text="End : " VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="10,79,0,0" TextWrapping="Wrap" Text="Org : " VerticalAlignment="Top"/>
+            <TextBlock FontSize="15" HorizontalAlignment="Left" Margin="220,23,0,0" TextWrapping="Wrap" Text="Custom Project : " VerticalAlignment="Top" Width="110"/>
+            <TextBlock HorizontalAlignment="Left" Margin="235,50,0,0" TextWrapping="Wrap" Text="Organization : " VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="235,101,0,0" TextWrapping="Wrap" Text="Start Date :" VerticalAlignment="Top" Width="74"/>
+            <TextBlock HorizontalAlignment="Left" Margin="235,149,0,0" TextWrapping="Wrap" Text="Ending Date :" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="235,197,0,0" TextWrapping="Wrap" Text="Count of Members : " VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="235,241,0,0" TextWrapping="Wrap" Text="Theme : " VerticalAlignment="Top"/>
+        </Grid>
+        <ListBox Name="ListBox_All" ItemsSource="{Binding Path=Get_All}" HorizontalAlignment="Stretch"  Margin="10,59,10,10" VerticalAlignment="Stretch"  RenderTransformOrigin="-0.472,0.501" Background="#FFC4D8D7"/>
+        <Menu HorizontalAlignment="Left" Height="22" VerticalAlignment="Top" Width="68" Background="#FFA7BBAB" Foreground="#FF010101">
+            <MenuItem Header="File">
+                <MenuItem Header="New" Click="New_Clicked"/>
+                <MenuItem Header="Open" Click="Open_Clicked"/>
+                <MenuItem Header="Save" Click="Save_Clicked"/>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Add Default Project" Click="Button_AddProject"/>
+                <MenuItem Header="Add Default Consulting" Click="Button_AddConsulting"/>
+                <MenuItem Header="Add Custom Project" Click="Button_AddCustomProject"/>
+                <MenuItem Header="Add Defaults" Click="Button_Add"/>
+                <MenuItem Header="Remove" Click="Button_Remove"/>
+            </MenuItem>
+        </Menu>
+        <ListBox Name="ListBox_Project" ItemsSource="{Binding Path=Get_Projects}" ItemTemplate="{StaticResource myPrTemplate}" HorizontalAlignment="Stretch" Margin="10,59,10,10" Grid.Row="2" VerticalAlignment="Stretch" Background="#FFC4D8D7" >
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header ="Add Default Project" Click="Button_AddProject">
+                    </MenuItem>
+                    <MenuItem Header ="Add Custom Project" Click="Button_AddCustomProject">
+                    </MenuItem>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
+        <TextBox FontSize="14" Name ="TextBox_name" Text="{Binding Path=Name}" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="44,51,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="102"/>
+        <TextBox FontSize="14" Grid.Column="1" Name="TexBox_Surname" Text="{Binding Path=Surname}" HorizontalAlignment="Left" Height="23" Margin="44,89,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="102"/>
+        <TextBlock Text="{Binding Path=IfChanged}" Grid.Column="1" HorizontalAlignment="Left" Margin="10,153,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" FontSize="14" />
+        <TextBlock FontSize="14" Text="{Binding Path=Get_Count_Of_Projects}" Grid.Column="1" HorizontalAlignment="Left" Margin="10,216,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" />
+        <RadioButton FontSize="15" Click="RadioButton_Clicked" Name="RadioButton_WithTemplate" Content="Output With Template" Grid.Column="1" HorizontalAlignment="Left" Margin="199,31,0,0" VerticalAlignment="Top"/>
+        <RadioButton FontSize="15" Click="RadioButton_Clicked" Name="RadioButton_WithoutTemplate" Content="Output Without Template" Grid.Column="1" HorizontalAlignment="Left" Margin="199,59,0,0" VerticalAlignment="Top"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,27,0,0" TextWrapping="Wrap" Text="The Researcher is : " FontSize="14" VerticalAlignment="Top"/>
+        <TextBlock Grid.Column="1" FontSize="14" HorizontalAlignment="Left" Margin="10,128,0,0" TextWrapping="Wrap" Text="The Collection is changed?" VerticalAlignment="Top"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,192,0,0" TextWrapping="Wrap" Text="Count of Projects : " FontSize="14" VerticalAlignment="Top"/>
+        <TextBlock FontSize="16" HorizontalAlignment="Left" Margin="219,25,0,0" TextWrapping="Wrap" Text="Whole Collection :" VerticalAlignment="Top" RenderTransformOrigin="0.496,-0.048"/>
+        <TextBlock FontSize="16" HorizontalAlignment="Left" Margin="251,22,0,0" Grid.Row="2" TextWrapping="Wrap" Text="Projects : " VerticalAlignment="Top"/>
+
+
+
+    </Grid>
+</Window>
