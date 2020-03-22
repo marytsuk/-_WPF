@@ -1,2 +1,2 @@
-# -_WPF
+# WPF
 Data binding mechanism in Windows Presentation Foundation.
